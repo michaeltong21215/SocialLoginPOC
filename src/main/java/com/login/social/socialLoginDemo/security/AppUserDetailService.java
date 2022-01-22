@@ -24,4 +24,13 @@ public class AppUserDetailService implements UserDetailsService {
        }
        return UserDetailImpl.build(user.get());
     }
+
+    public UserDetails getUserById(Long id) {
+        Optional<User> optionalUser = userRepository.findById(id);
+        if(optionalUser.isPresent()){
+            return UserPrincipal.create(optionalUser.get());
+        } else {
+            throw new UsernameNotFoundException("user with id " + id + " is not found");
+        }
+    }
 }

@@ -19,6 +19,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -75,7 +76,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().oauth2Login().authorizationEndpoint().baseUri("/oauth2/authorize").authorizationRequestRepository(getCookieOAuth2AuthorizationRequestRepo())
                 .and().redirectionEndpoint().baseUri("/oauth2/callback/*")
                 .and().userInfoEndpoint().userService(appOAuth2UserService)
-                .and().successHandler(appOAuth2AuthSuccessHandler)
-                .and()
+                .and().successHandler(appOAuth2AuthSuccessHandler).failureHandler(appOAuth2AuthFailureHandler);
+
+        httpSecurity.addFilterBefore(getTokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 }
